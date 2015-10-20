@@ -107,21 +107,21 @@ Examples
 
     >>> trn = transliterator(format_='conll', source='hindi')
     >>> conll = """
-    ...     ... 1       इसकी     यह      pn      PRP     cat-pn|gen-f|num-sg|pers-3|case-o|vib-का|tam-kA|chunkId-NP|chunkType-head|stype-|voicetype-    2     r6      _       _
-    ...     ... 2       ऊँचाई     ऊँचाई     n       NN      cat-n|gen-f|num-sg|pers-3|case-d|vib-0|tam-0|chunkId-NP2|chunkType-head|stype-|voicetype-     6     k1      _       _
-    ...     ... 3       केवल     केवल     avy     RP      cat-avy|gen-|num-|pers-|case-|vib-|tam-|chunkId-NP3|chunkType-child|stype-|voicetype-   4       lwg__rp _       _
-    ...     ... 4       1982    1982    num     QC      cat-num|gen-any|num-any|pers-|case-any|vib-|tam-|chunkId-NP3|chunkType-child|stype-|voicetype-  5       nmod__adj       _       _
-    ...     ... 5       मीटर     मीटर     n       NN      cat-n|gen-m|num-sg|pers-3|case-d|vib-0|tam-0|chunkId-NP3|chunkType-head|stype-|voicetype-     6     k1s     _       _
-    ...     ... 6       है       है       v       VM      cat-v|gen-any|num-sg|pers-3|case-|vib-है|tam-hE|chunkId-VGF|chunkType-head|stype-declarative|voicetype-active    0       root    _       _
-    ...     ... 7       ।       ।       punc    SYM     cat-punc|gen-|num-|pers-|case-|vib-|tam-|chunkId-BLK|chunkType-head|stype-|voicetype-   6       rsym    _       _"""
+    ... 1       इसकी     यह      pn      PRP     cat-pn|gen-f|num-sg|pers-3|case-o|vib-का|tam-kA|chunkId-NP|chunkType-head|stype-|voicetype-    2     r6      _       _
+    ... 2       ऊँचाई     ऊँचाई     n       NN      cat-n|gen-f|num-sg|pers-3|case-d|vib-0|tam-0|chunkId-NP2|chunkType-head|stype-|voicetype-     6     k1      _       _
+    ... 3       केवल     केवल     avy     RP      cat-avy|gen-|num-|pers-|case-|vib-|tam-|chunkId-NP3|chunkType-child|stype-|voicetype-   4       lwg__rp _       _
+    ... 4       1982    1982    num     QC      cat-num|gen-any|num-any|pers-|case-any|vib-|tam-|chunkId-NP3|chunkType-child|stype-|voicetype-  5       nmod__adj       _       _
+    ... 5       मीटर     मीटर     n       NN      cat-n|gen-m|num-sg|pers-3|case-d|vib-0|tam-0|chunkId-NP3|chunkType-head|stype-|voicetype-     6     k1s     _       _
+    ... 6       है       है       v       VM      cat-v|gen-any|num-sg|pers-3|case-|vib-है|tam-hE|chunkId-VGF|chunkType-head|stype-declarative|voicetype-active    0       root    _       _
+    ... 7       ।       ।       punc    SYM     cat-punc|gen-|num-|pers-|case-|vib-|tam-|chunkId-BLK|chunkType-head|stype-|voicetype-   6       rsym    _       _"""
     >>> print trn.transform(conll)
-    ۔۔۔ 1       اسکی     یہ      pn      PRP     cat−pn|gen−f|num−sg|pers−3|case−o|vib−کا|tam−kA|chunkId−NP|chunkType−head|stype−|voicetype−    2     r6      _       _
-        ۔۔۔ 2       اونچائی     اونچائی     n       NN      cat−n|gen−f|num−sg|pers−3|case−d|vib−0|tam−0|chunkId−NP2|chunkType−head|stype−|voicetype−     6     k1      _       _
-        ۔۔۔ 3       کیول     کیول     avy     RP      cat−avy|gen−|num−|pers−|case−|vib−|tam−|chunkId−NP3|chunkType−child|stype−|voicetype−   4       lwg__rp _       _
-        ۔۔۔ 4       1982    1982    num     QC      cat−num|gen−any|num−any|pers−|case−any|vib−|tam−|chunkId−NP3|chunkType−child|stype−|voicetype−  5       nmod__adj       _       _
-        ۔۔۔ 5       میٹر     میٹر     n       NN      cat−n|gen−m|num−sg|pers−3|case−d|vib−0|tam−0|chunkId−NP3|chunkType−head|stype−|voicetype−     6     k1s     _       _
-        ۔۔۔ 6       ہے       ہے       v       VM      cat−v|gen−any|num−sg|pers−3|case−|vib−ہے|tam−hE|chunkId−VGF|chunkType−head|stype−declarative|voicetype−active    0       root    _       _
-        ۔۔۔ 7       ۔       ۔       punc    SYM     cat−punc|gen−|num−|pers−|case−|vib−|tam−|chunkId−BLK|chunkType−head|stype−|voicetype−   6       rsym    _       _
+    1       اسکی     یہ      pn      PRP     cat−pn|gen−f|num−sg|pers−3|case−o|vib−کا|tam−kA|chunkId−NP|chunkType−head|stype−|voicetype−    2     r6      _       _
+    2       اونچائی     اونچائی     n       NN      cat−n|gen−f|num−sg|pers−3|case−d|vib−0|tam−0|chunkId−NP2|chunkType−head|stype−|voicetype−     6     k1      _       _
+    3       کیول     کیول     avy     RP      cat−avy|gen−|num−|pers−|case−|vib−|tam−|chunkId−NP3|chunkType−child|stype−|voicetype−   4       lwg__rp _       _
+    4       1982    1982    num     QC      cat−num|gen−any|num−any|pers−|case−any|vib−|tam−|chunkId−NP3|chunkType−child|stype−|voicetype−  5       nmod__adj       _       _
+    5       میٹر     میٹر     n       NN      cat−n|gen−m|num−sg|pers−3|case−d|vib−0|tam−0|chunkId−NP3|chunkType−head|stype−|voicetype−     6     k1s     _       _
+    6       ہے       ہے       v       VM      cat−v|gen−any|num−sg|pers−3|case−|vib−ہے|tam−hE|chunkId−VGF|chunkType−head|stype−declarative|voicetype−active    0       root    _       _
+    7       ۔       ۔       punc    SYM     cat−punc|gen−|num−|pers−|case−|vib−|tam−|chunkId−BLK|chunkType−head|stype−|voicetype−   6       rsym    _       _
 
 3. **work with bio or tnt:**
 
