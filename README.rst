@@ -17,7 +17,7 @@ Installation
 Dependencies
 ~~~~~~~~~~~~
 
-`python-hutrans`_ requires `sklearn`_, `cython`_, `SciPy`_ and `python-converter-indic`.
+`python-hutrans`_ requires `sklearn`_, `cython`_, `SciPy`_ and `python-converter-indic`_.
 
 .. _`sklearn`: https://github.com/scikit-learn/scikit-learn
 
