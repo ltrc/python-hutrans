@@ -31,6 +31,7 @@ class DP_Transliterator():
     def __init__(self):        
 
         self.n = 4
+	self.tab = '~~'
 	self.space = '^^'
         self.lookup = dict()
 	self.esc_char = chr(0)
@@ -101,8 +102,8 @@ class DP_Transliterator():
 	    if not line.strip():
                 tline += "\n"
             line = self.con.convert(line).decode('utf-8')  # Convert to wx
+            line = line.replace('\t', self.tab)
             line = line.replace(' ', self.space)
-            line = line.replace('\t', self.space*8)
             line = ' '.join(re.split(r"([^a-zA-Z%s]+)" %(self.esc_char), line)).split()
             for word in line:
 		if word == self.space:
@@ -114,5 +115,6 @@ class DP_Transliterator():
 		    tline += op_word.encode('utf-8')
 	    tline += "\n"
        
-	tline = tline.replace(self.space, " ").strip()
+	tline = tline.replace(self.space, " ")
+	tline = tline.replace(self.tab, "\t").strip()
         return tline

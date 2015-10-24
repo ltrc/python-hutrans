@@ -51,7 +51,10 @@ def main():
     else:
         for line in args.INFILE:
             tline = trn.convert(line)
-	    args.OUTFILE.write(tline)
+	    if args.format_ == "text":
+		args.OUTFILE.write("%s\n" %(tline))
+	    else:
+		args.OUTFILE.write(tline)
     
     # close files 
     args.INFILE.close()

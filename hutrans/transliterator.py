@@ -118,7 +118,7 @@ class transliterator():
 
     def convert(self, line):
         if self.format_=="text":
-            return "%s\n" %(self.transform(line))
+            return self.transform(line)
         elif self.format_=="ssf":
 	    self.special = set(['null', 'NULL', 'COMMA', 'SINGLE_QUOTE', '-JOIN'])
 	    return self.convert_ssf(line)
