@@ -55,7 +55,7 @@ Examples
 
 1. **Work with Files:**
 
-::
+.. parsed-literal::
 
     hutrans --i tests/text/urdu.txt --s urdu --o tests/urdu-dev.txt
     hutrans --i tests/text/hindi.txt --s hindi --o tests/hindi-parab.txt
