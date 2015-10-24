@@ -14,7 +14,6 @@ import warnings
 
 import sklearn
 import numpy as np
-from sklearn.externals import joblib as jl
 
 import viterbi
 from converter_indic import wxConvert
@@ -35,8 +34,8 @@ class PD_Transliterator():
         self.lookup = dict()
         self.con = wxConvert(order='wx2utf')
         path = os.path.abspath(__file__).rpartition('/')[0]
-        self.clf = jl.load('%s/models/uh_sparse-clf' %path)
-        self.vec = jl.load('%s/models/uh_sparse-vec' %path)
+        self.clf = np.load('%s/models/uh_sparse-clf.npy' %path)[0]
+        self.vec = np.load('%s/models/uh_sparse-vec.npy' %path)[0]
 	self.range_ = set(range(int("0x0600", 16), int("0x06ff", 16)))
 
         try:
@@ -103,6 +102,7 @@ class PD_Transliterator():
             # remove vowels
             line = re.sub(ur'([\u064b\u0670\u0650\u0651\u064f\u064e]+)', r'', line)
             line = line.replace(' ', self.space)
+            line = line.replace('\t', self.space*8)
             line = re.sub(ur'([۰-۹\x00-\x80%s]+)' %self.punkt_str, r' \1 ', line).split()
             for word in line:
 		if word == self.space:

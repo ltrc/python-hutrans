@@ -14,7 +14,6 @@ import warnings
 
 import numpy as np
 from scipy.sparse import csc_matrix
-from sklearn.externals import joblib as jl
 
 import viterbi
 from converter_indic import wxConvert
@@ -37,8 +36,8 @@ class DP_Transliterator():
 	self.esc_char = chr(0)
         self.con = wxConvert(order='utf2wx')
         path = os.path.abspath(__file__).rpartition('/')[0]
-        self.clf = jl.load('%s/models/hu_sparse-clf' %path)
-        self.vec = jl.load('%s/models/hu_sparse-vec' %path)
+        self.clf = np.load('%s/models/hu_sparse-clf.npy' %path)[0]
+        self.vec = np.load('%s/models/hu_sparse-vec.npy' %path)[0]
 
         try:
             with codecs.open('%s/extras/punkt.map' %path, 'r', 'utf-8') as punkt_fp: 
@@ -103,12 +102,13 @@ class DP_Transliterator():
                 tline += "\n"
             line = self.con.convert(line).decode('utf-8')  # Convert to wx
             line = line.replace(' ', self.space)
+            line = line.replace('\t', self.space*8)
             line = ' '.join(re.split(r"([^a-zA-Z%s]+)" %(self.esc_char), line)).split()
             for word in line:
 		if word == self.space:
 		    tline += " "
-		elif word[:2] == self.esc_char:
-		    tline += word[2:].encode('utf-8')
+		elif word[0] == self.esc_char:
+		    tline += word[1:].encode('utf-8')
 		else:
 		    op_word = self.case_trans(word)
 		    tline += op_word.encode('utf-8')
