@@ -27,6 +27,14 @@ Dependencies
 
 .. _`python-converter-indic`: https://github.com/irshadbhat/python-converter-indic
 
+To install the dependencies do something like this (Ubuntu):
+
+::
+
+    sudo apt-get install python-sklearn
+    sudo apt-get install cython
+    sudo apt-get install python-scipy
+
 Download
 ~~~~~~~~
 
