@@ -37,6 +37,7 @@ class DP_Transliterator():
 	self.esc_char = chr(0)
         self.con = wxConvert(order='utf2wx')
         path = os.path.abspath(__file__).rpartition('/')[0]
+	sys.path.append(path)
 	self.coef_ = np.load('%s/models/hu_coef.npy' %path)[0]
 	self.classes_ = np.load('%s/models/hu_classes.npy' %path)[0]
 	self.intercept_trans_ = np.load('%s/models/hu_intercept_trans.npy' %path)

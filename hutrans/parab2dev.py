@@ -12,7 +12,6 @@ import sys
 import codecs
 import warnings
 
-import sklearn
 import numpy as np
 
 import viterbi
@@ -35,6 +34,7 @@ class PD_Transliterator():
         self.lookup = dict()
         self.con = wxConvert(order='wx2utf')
         path = os.path.abspath(__file__).rpartition('/')[0]
+	sys.path.append(path)
 	self.coef_ = np.load('%s/models/uh_coef.npy' %path)[0]
 	self.classes_ = np.load('%s/models/uh_classes.npy' %path)[0]
         self.intercept_trans_ = np.load('%s/models/uh_intercept_trans.npy' %path)
