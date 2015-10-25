@@ -60,11 +60,13 @@ Examples
     hutrans --i tests/text/urdu.txt --s urdu --o tests/urdu-dev.txt
     hutrans --i tests/text/hindi.txt --s hindi --o tests/hindi-parab.txt
     hutrans --i tests/ssf-intra/hin-ssf.txt  --s hindi --f ssf --t intra --o hin-ssf-parab.txt
+    hutrans --i tests/ssf-intra/hin-ssf.txt  --s hindi --f ssf --t inter --n --o hin-ssf-parab.txt
 
     --i input     <input-file>
     --s source    source script [hindi|urdu]
     --f format    select output format [text|ssf|conll|bio|tnt]
     --t ssf-type  specify ssf-type [inter|intra] in case file format (--f) is ssf
+    --n		  set this flag for nested ssf
     --o output    <output-file>    
 
     irshad@python-hutrans$ cat tests/text/hindi.txt 

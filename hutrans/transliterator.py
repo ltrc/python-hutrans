@@ -15,39 +15,40 @@ __email__      = "irshad.bhat@research.iiit.ac.in",
 
 class transliterator():
 
-    def __init__(self, format_="text", source="hindi", ssf_type=None):
+    def __init__(self, format_="text", source="hindi", ssf_type=None, nested=False):
+        self.nested = nested
         self.format_ = format_
-	self.ssf_type = ssf_type
+        self.ssf_type = ssf_type
         if source=="hindi":
-	    dpt = DP_Transliterator()
-	    self.transform = dpt.transliterate
-	else:
-	    pdt = PD_Transliterator()
-	    self.transform = pdt.transliterate
+            dpt = DP_Transliterator()
+            self.transform = dpt.transliterate
+        else:
+            pdt = PD_Transliterator()
+            self.transform = pdt.transliterate
 
     def convert_ssf(self, sentence):
-	"""Convert SSF data"""
-	consen = str()
-	obj = SSFReader(sentence)
-	obj.getAnnotations()
+        """Convert SSF data"""
+        consen = str()
+        obj = SSFReader(sentence)
+        obj.getAnnotations()
         for node,order in zip(obj.nodeList, obj.fs_order):
-	    if self.ssf_type == 'intra' or (self.ssf_type == 'inter' and not node.id.isdigit()):
-		name = self.transform(node.name) if node.name not in self.special else node.name
-		head = node.head
-	    else:
-		name = node.name
-		head = self.transform(node.head) if node.head not in self.special else node.head
-	    if self.ssf_type == 'intra':
-		parent = self.transform(node.parent) if node.parent not in self.special else node.parent
-	    else:
-		parent = node.parent
-	    wordForm = self.transform(node.wordForm) if node.wordForm not in self.special else node.wordForm
+            if self.ssf_type == 'intra' or (self.ssf_type == 'inter' and not node.id.isdigit()):
+                name = self.transform(node.name) if node.name not in self.special else node.name
+                head = self.transform(node.head) if self.nested else node.head
+            else:
+                name = node.name
+                head = self.transform(node.head) if node.head not in self.special else node.head
+            if self.ssf_type == 'intra':
+                parent = self.transform(node.parent) if node.parent not in self.special else node.parent
+            else:
+                parent = node.parent
+            wordForm = self.transform(node.wordForm) if node.wordForm not in self.special else node.wordForm
             dmrel_ = 'dmrel' if node.dmrel else 'drel'
             ssfNode = [node.id, wordForm, node.posTag]
             if isinstance(node.af, tuple):
                 nL = node.af
-		lemma = self.transform(nL.lemma) if nL.lemma not in self.special else nL.lemma
-		vib = self.transform(nL.vib) if nL.vib not in self.special else nL.vib
+                lemma = self.transform(nL.lemma) if nL.lemma not in self.special else nL.lemma
+                vib = self.transform(nL.vib) if nL.vib not in self.special else nL.vib
                 features = ",".join((lemma, nL.cat, nL.gen, nL.num, nL.per, nL.case, vib, nL.tam))
             else:
                 features = node.af
@@ -65,7 +66,16 @@ class transliterator():
                     "voicetype='%s'" % (node.voicetype) if node.voicetype else None,
                     "poslcat='%s'" % (node.poslcat) if node.poslcat else None,
                     "mtype='%s'" % (node.mtype) if node.mtype else None,
-                    "troot='%s'" % (node.troot) if node.troot else None
+                    "troot='%s'" % (node.troot) if node.troot else None,
+                    "etype='%s'" % (node.etype) if node.etype else None,
+                    "etype_root='%s'" % (node.etype_root) if node.etype_root else None,
+                    "emph='%s'" % (node.emph) if node.emph else None,
+                    "esubtype='%s'" % (node.esubtype) if node.esubtype else None,
+                    "etype_name='%s'" % (node.etype_name) if node.etype_name else None,
+                    "agr_num='%s'" % (node.agr_num) if node.agr_num else None,
+                    "hon='%s'" % (node.hon) if node.hon else None,
+                    "agr_cas='%s'" % (node.agr_cas) if node.agr_cas else None,
+                    "agr_gen='%s'" % (node.agr_gen) if node.agr_gen else None #NOTE add node
                   ]
             fs_ = fs[:]
             for idx in order:
@@ -75,18 +85,18 @@ class transliterator():
             if node.id:
                 consen += "%s\n" %("\t".join(ssfNode+[fs]))
             else:
-                consen += "%s\n" %("\t))\t\t")
+                consen += "%s\n" %("\t))")
 
-	return consen
+        return consen
 
     def convert_conll(self, conll):
         """Convert CONLL data"""
         trans_LINES = list()
-	if isinstance(conll, unicode):
-	    conll = conll.encode('utf-8')
+        if isinstance(conll, unicode):
+            conll = conll.encode('utf-8')
         lines = conll.split("\n")
         for line in lines:
-	    line = line.strip()
+            line = line.strip()
             if not line:
                 trans_LINES.append("")
                 continue
@@ -98,10 +108,10 @@ class transliterator():
             vib = FEATS[vib_id].lstrip("vib-")
             vib = re.split("([+_0-9]+)", vib)
             vib = " ".join(vib).split()
-	    if not (FORM[0] == "&" and FORM[-1] == ";"):
-		FORM = self.transform(FORM)
-	    if not (LEMMA[0] == "&" and LEMMA[-1] == ";"):
-		LEMMA = self.transform(LEMMA)
+            if not (FORM[0] == "&" and FORM[-1] == ";"):
+                FORM = self.transform(FORM)
+            if not (LEMMA[0] == "&" and LEMMA[-1] == ";"):
+                LEMMA = self.transform(LEMMA)
             trans_FEATS = [FORM, LEMMA]
             for word in vib:
                 if word in ["+", "_"] or word.isdigit():
@@ -120,8 +130,8 @@ class transliterator():
         if self.format_=="text":
             return self.transform(line)
         elif self.format_=="ssf":
-	    self.special = set(['null', 'NULL', 'COMMA', 'SINGLE_QUOTE', '-JOIN'])
-	    return self.convert_ssf(line)
+            self.special = set(['null', 'NULL', 'COMMA', 'SINGLE_QUOTE', '-JOIN'])
+            return self.convert_ssf(line)
         elif self.format_=="conll":
             return self.convert_conll(line)
         elif self.format_ in ["bio", "tnt"]:

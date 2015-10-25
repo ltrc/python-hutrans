@@ -27,6 +27,7 @@ def main():
     parser.add_argument('--i', metavar='input', dest="INFILE", type=argparse.FileType('r'), default=sys.stdin, help="<input-file>")
     parser.add_argument('--f', metavar='format', dest="format_", choices=format_list, default="text", help="%s" %format_help)
     parser.add_argument('--t', metavar='ssf-type', dest="ssf_type", choices=["inter","intra"], default=None, help=ssf_help)
+    parser.add_argument('--n', dest='nested', action='store_true', help="set this flag for nested ssf")
     parser.add_argument('--o', metavar='output', dest="OUTFILE", type=argparse.FileType('w'), default=sys.stdout, help="<output-file>")
 
     args = parser.parse_args()
@@ -36,17 +37,21 @@ def main():
         sys.exit(0)
 
     # initialize transliterator object
-    trn = transliterator(args.format_, args.source, args.ssf_type)
+    trn = transliterator(args.format_, args.source, args.ssf_type, args.nested)
             
     # transliterate text
     if args.format_ == "ssf":
-        sentences = re.finditer("(<Sentence id=.*?>)(.*?)</Sentence>", args.INFILE.read(), re.S)
-        sentences = ((g.group(1), g.group(2)) for g in sentences)
-        for sid, sentence in sentences:
-            sentence = sentence.strip()
+	if args.nested:
+	    sentences = re.finditer("(<Sentence id=.*?>\s*\n.*?)\n(.*?)\)\)\s*\n</Sentence>", args.INFILE.read(), re.S)
+        else:
+	    sentences = re.finditer("(<Sentence id=.*?>)(.*?)</Sentence>", args.INFILE.read(), re.S)
+	for sid_sentence in sentences:
+	    sid = sid_sentence.group(1)
+	    sentence = sid_sentence.group(2).strip()
             args.OUTFILE.write('%s\n' %sid)
             consen = trn.convert(sentence)
             args.OUTFILE.write('%s' %consen)
+	    if args.nested: args.OUTFILE.write("\t))\n")
             args.OUTFILE.write("</Sentence>\n\n")
     else:
         for line in args.INFILE:

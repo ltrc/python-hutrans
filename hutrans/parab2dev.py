@@ -16,8 +16,8 @@ import sklearn
 import numpy as np
 
 import viterbi
+import one_hot_repr
 from converter_indic import wxConvert
-from one_hot_repr import OneHotEncoder as ft
 
 warnings.filterwarnings("ignore")
 
@@ -35,7 +35,11 @@ class PD_Transliterator():
         self.lookup = dict()
         self.con = wxConvert(order='wx2utf')
         path = os.path.abspath(__file__).rpartition('/')[0]
-        self.clf = np.load('%s/models/uh_sparse-clf.npy' %path)[0]
+	self.coef_ = np.load('%s/models/uh_coef.npy' %path)[0]
+	self.classes_ = np.load('%s/models/uh_classes.npy' %path)[0]
+        self.intercept_trans_ = np.load('%s/models/uh_intercept_trans.npy' %path)
+        self.intercept_init_ = np.load('%s/models/uh_intercept_init.npy' %path)
+        self.intercept_final_ = np.load('%s/models/uh_intercept_final.npy' %path)
         self.vec = np.load('%s/models/uh_sparse-vec.npy' %path)[0]
 	self.range_ = set(range(int("0x0600", 16), int("0x06ff", 16)))
 
@@ -62,13 +66,12 @@ class PD_Transliterator():
 
     def predict(self, word):   
         X = self.vec.transform(word)
-        scores = X.dot(self.clf.coef_.T).toarray() 
-        n_classes = len(self.clf.classes_)
+        scores = X.dot(self.coef_.T).toarray() 
 
-        y = viterbi.decode(scores, self.clf.intercept_trans_,
-               self.clf.intercept_init_, self.clf.intercept_final_)
+        y = viterbi.decode(scores, self.intercept_trans_,
+               self.intercept_init_, self.intercept_final_)
 
-        y =  [self.clf.classes_[pred] for pred in y]
+        y =  [self.classes_[pred] for pred in y]
         return re.sub('_','',''.join(y))
 
     def case_trans(self, word):

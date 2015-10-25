@@ -16,8 +16,8 @@ import numpy as np
 from scipy.sparse import csc_matrix
 
 import viterbi
+import one_hot_repr
 from converter_indic import wxConvert
-from one_hot_repr import OneHotEncoder as ft
 
 warnings.filterwarnings("ignore")
 
@@ -37,12 +37,17 @@ class DP_Transliterator():
 	self.esc_char = chr(0)
         self.con = wxConvert(order='utf2wx')
         path = os.path.abspath(__file__).rpartition('/')[0]
-        self.clf = np.load('%s/models/hu_sparse-clf.npy' %path)[0]
+	self.coef_ = np.load('%s/models/hu_coef.npy' %path)[0]
+	self.classes_ = np.load('%s/models/hu_classes.npy' %path)[0]
+	self.intercept_trans_ = np.load('%s/models/hu_intercept_trans.npy' %path)
+	self.intercept_init_ = np.load('%s/models/hu_intercept_init.npy' %path)
+	self.intercept_final_ = np.load('%s/models/hu_intercept_final.npy' %path)
         self.vec = np.load('%s/models/hu_sparse-vec.npy' %path)[0]
 
         try:
-            with codecs.open('%s/extras/punkt.map' %path, 'r', 'utf-8') as punkt_fp: 
+            with codecs.open('%s/extras/punkt.map' %path, 'r', 'utf-8') as punkt_fp:
                 self.punkt = {line.split()[0]: line.split()[1] for line in punkt_fp}
+		self.punkt = {k:v for k,v in self.punkt.items() if k not in ['"', "'"]}
         except IOError, e:
             print >> sys.stderr, e
             sys.exit(0)
@@ -63,12 +68,11 @@ class DP_Transliterator():
 
     def predict(self, word):
         X = self.vec.transform(word)
-        scores = X.dot(self.clf.coef_.T).toarray()
-        n_classes = len(self.clf.classes_)
+        scores = X.dot(self.coef_.T).toarray()
 
-        y = viterbi.decode(scores, self.clf.intercept_trans_, self.clf.intercept_init_, self.clf.intercept_final_)
+        y = viterbi.decode(scores, self.intercept_trans_, self.intercept_init_, self.intercept_final_)
 
-        y =  [self.clf.classes_[pred] for pred in y]
+        y =  [self.classes_[pred] for pred in y]
 
         return re.sub('_','',''.join(y))
 
