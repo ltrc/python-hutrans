@@ -48,7 +48,6 @@ class DP_Transliterator():
         try:
             with codecs.open('%s/extras/punkt.map' %path, 'r', 'utf-8') as punkt_fp:
                 self.punkt = {line.split()[0]: line.split()[1] for line in punkt_fp}
-		self.punkt = {k:v for k,v in self.punkt.items() if k not in ['"', "'"]}
         except IOError, e:
             print >> sys.stderr, e
             sys.exit(0)
