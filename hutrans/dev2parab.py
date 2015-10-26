@@ -114,6 +114,8 @@ class DP_Transliterator():
 		    tline += " "
 		elif word[0] == self.esc_char:
 		    tline += word[1:].encode('utf-8')
+                elif not word[0].encode('utf-8').isalpha():
+                    tline += word.encode('utf-8')
 		else:
 		    op_word = self.case_trans(word)
 		    tline += op_word.encode('utf-8')

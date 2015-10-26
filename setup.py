@@ -10,7 +10,7 @@ import warnings
 import sys
 
 dist_dir = os.path.dirname(os.path.abspath(__file__))
-os.system("gunzip %s/hutrans/models/* 2> /dev/null" %dist_dir)
+os.system("gunzip -kf %s/hutrans/models/* 2> /dev/null" %dist_dir)
 
 try:
     from setuptools import setup, Extension
@@ -92,7 +92,7 @@ setup(
     url="https://github.com/irshadbhat/hutrans",
     package_dir={"hutrams":"hutrans"},
     packages=['hutrans'],
-    package_data={'hutrans': ['models/*', 'extras/*']},
+    package_data={'hutrans': ['models/*.npy', 'extras/*']},
 
     classifiers=[
         "Topic :: Indian Languages :: Language Identification",
@@ -109,6 +109,7 @@ setup(
     ext_modules=[
         Extension("hutrans.viterbi", ["hutrans/viterbi.pyx"]),
     ],
-    requires=["sklearn"],
+    #install_requires=["cython", "numpy", "scipy", "sklearn"],
+    requires=["cython", "numpy", "scipy", "sklearn"],
     **params
 )
