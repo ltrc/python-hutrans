@@ -103,10 +103,15 @@ class PD_Transliterator():
 	    if not line.strip():
                 tline += "\n"
 		continue
-            # remove vowels
-            line = re.sub(ur'([\u064b\u0670\u0650\u0651\u064f\u064e]+)', r'', line)
             line = line.replace('\t', self.tab)
             line = line.replace(' ', self.space)
+            # remove vowels
+            line = re.sub(ur'([\u064b\u0670\u0650\u0651\u064f\u064e]+)', r'', line)
+	    # normalize
+	    line = line.replace(u'ه', u'ہ')
+	    line = line.replace(u'للہ', u'للاہ')
+	    line = line.replace(u'ا\u0670', u'ن')
+	    line = re.sub(u'([^کگچجٹڈتدپب])ھ([یے])', ur'\1ہ\2', line)
             line = re.sub(ur'([۰-۹\x00-\x80%s]+)' %self.punkt_str, r' \1 ', line).split()
             for word in line:
 		if word == self.space:
