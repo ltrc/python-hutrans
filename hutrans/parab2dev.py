@@ -29,19 +29,24 @@ class PD_Transliterator():
 
     def __init__(self): 
         self.n = 4
-	self.tab = '~~'
-	self.space = '^^'
+        self.tab = chr(1)*2
+        self.space = chr(2)*2
         self.lookup = dict()
         self.con = wxConvert(order='wx2utf')
         path = os.path.abspath(__file__).rpartition('/')[0]
 	sys.path.append(path)
 	self.coef_ = np.load('%s/models/uh_coef.npy' %path)[0]
-	self.classes_ = np.load('%s/models/uh_classes.npy' %path)[0]
-        self.intercept_trans_ = np.load('%s/models/uh_intercept_trans.npy' %path)
-        self.intercept_init_ = np.load('%s/models/uh_intercept_init.npy' %path)
-        self.intercept_final_ = np.load('%s/models/uh_intercept_final.npy' %path)
         self.vec = np.load('%s/models/uh_sparse-vec.npy' %path)[0]
-	self.range_ = set(range(int("0x0600", 16), int("0x06ff", 16)))
+	self.classes_ = np.load('%s/models/uh_classes.npy' %path)[0]
+        self.intercept_init_ = np.load('%s/models/uh_intercept_init.npy' %path)
+        self.intercept_trans_ = np.load('%s/models/uh_intercept_trans.npy' %path)
+        self.intercept_final_ = np.load('%s/models/uh_intercept_final.npy' %path)
+	self.lrange = set(range(int("0x0621", 16), int("0x063b", 16))) | \
+		      set(range(int("0x0641", 16), int("0x064b", 16))) | \
+		      set(range(int("0x0674", 16), int("0x06d4", 16))) 
+	self.digits_ = set(range(int("0x0660", 16), int("0x066a", 16))) | \
+		       set(range(int("0x06f0", 16), int("0x06fa", 16))) 
+	self.letters = re.compile(u'([^\u0621-\u063a\u0641-\u064a\u0674-\u06d3]+)')
 
         try:
             with codecs.open('%s/extras/punkt.map' %path, 'r', 'utf-8') as punkt_fp: 
@@ -75,23 +80,22 @@ class PD_Transliterator():
         return re.sub('_','',''.join(y))
 
     def case_trans(self, word):
-        if not word:
-            return u''
         if word in self.lookup:
             return self.lookup[word]
-        if ord(word[0]) < 128 or word[0] in self.punkt:
+        if ord(word[0]) not in self.lrange:
             non_alpha = list(word)
             for i,char in enumerate(word):
                 non_alpha[i] = char
                 if char in self.punkt:
                     non_alpha[i] = self.punkt[char]
-            non_alpha = ''.join(non_alpha)
+            non_alpha = ''.join(non_alpha).encode('utf-8')
             self.lookup[word] = non_alpha
             return non_alpha
         word_feats = ' '.join(word).replace(u' ھ', u'ھ').encode('utf-8').split()
         word_feats = self.feature_extraction(word_feats)
-        op_word = self.con.convert(self.predict(word_feats)).decode('utf-8')
+        op_word = self.con.convert(self.predict(word_feats))
         self.lookup[word] = op_word
+
         return op_word
 
     def transliterate(self, text):
@@ -112,15 +116,16 @@ class PD_Transliterator():
 	    line = line.replace(u'للہ', u'للاہ')
 	    line = line.replace(u'ا\u0670', u'ن')
 	    line = re.sub(u'([^کگچجٹڈتدپب])ھ([یے])', ur'\1ہ\2', line)
-            line = re.sub(ur'([۰-۹\x00-\x80%s]+)' %self.punkt_str, r' \1 ', line).split()
+            line = self.letters.split(line)
             for word in line:
+		if not word:
+		    continue
 		if word == self.space:
 		    tline += " "
-		elif ord(word[0]) not in self.range_:
-		    tline += word.encode('utf-8')
+		if word == self.tab:
+		    tline += "\t"
 		else:
-		    op_word = self.case_trans(word)
-		    tline += op_word.encode('utf-8')
+		    tline += self.case_trans(word)
 	    tline += "\n"
 
 	tline = tline.replace(self.tab, '\t')

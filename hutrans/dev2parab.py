@@ -31,19 +31,21 @@ class DP_Transliterator():
     def __init__(self):        
 
         self.n = 4
-	self.tab = '~~'
-	self.space = '^^'
-        self.lookup = dict()
+	self.tab = chr(1)*2
+	self.space = chr(2)*2
 	self.esc_char = chr(0)
+        self.lookup = dict()
         self.con = wxConvert(order='utf2wx')
         path = os.path.abspath(__file__).rpartition('/')[0]
 	sys.path.append(path)
 	self.coef_ = np.load('%s/models/hu_coef.npy' %path)[0]
-	self.classes_ = np.load('%s/models/hu_classes.npy' %path)[0]
-	self.intercept_trans_ = np.load('%s/models/hu_intercept_trans.npy' %path)
-	self.intercept_init_ = np.load('%s/models/hu_intercept_init.npy' %path)
-	self.intercept_final_ = np.load('%s/models/hu_intercept_final.npy' %path)
         self.vec = np.load('%s/models/hu_sparse-vec.npy' %path)[0]
+	self.classes_ = np.load('%s/models/hu_classes.npy' %path)[0]
+	self.intercept_init_ = np.load('%s/models/hu_intercept_init.npy' %path)
+	self.intercept_trans_ = np.load('%s/models/hu_intercept_trans.npy' %path)
+	self.intercept_final_ = np.load('%s/models/hu_intercept_final.npy' %path)
+	self.lrange = set(range(ord('a'), ord('z')+1)) | set(range(ord('A'), ord('Z')+1))
+	self.letters = re.compile(r"([^a-zA-Z%s]+)" %(self.esc_char))
 
         try:
             with codecs.open('%s/extras/punkt.map' %path, 'r', 'utf-8') as punkt_fp:
@@ -77,23 +79,21 @@ class DP_Transliterator():
         return re.sub('_','',''.join(y))
 
     def case_trans(self, word):
-        if not word:
-            return u''
         if word in self.lookup:
             return self.lookup[word]
-        if not word.isalpha():
+        if not ord(word[0]) in self.lrange:
             non_alpha = list(word)
             for i,char in enumerate(word):
                 non_alpha[i] = char
                 if char in self.punkt:
                     non_alpha[i] = self.punkt[char]
-            non_alpha = ''.join(non_alpha)
+            non_alpha = ''.join(non_alpha).encode('utf-8')
             self.lookup[word] = non_alpha
             return non_alpha
         word_feats = ' '.join(word).replace(' a', 'a').replace(' Z', 'Z')
         word_feats = word_feats.encode('utf-8').split()
         word_feats = self.feature_extraction(word_feats)
-        op_word = self.predict(word_feats).decode('utf-8')
+        op_word = self.predict(word_feats)
         self.lookup[word] = op_word
 
         return op_word
@@ -105,20 +105,23 @@ class DP_Transliterator():
 	for line in lines:
 	    if not line.strip():
                 tline += "\n"
+		continue
             line = self.con.convert(line).decode('utf-8')  # Convert to wx
             line = line.replace('\t', self.tab)
             line = line.replace(' ', self.space)
-            line = ' '.join(re.split(r"([^a-zA-Z%s]+)" %(self.esc_char), line)).split()
+            line = self.letters.split(line)
             for word in line:
+		if not word:
+		    continue
 		if word == self.space:
 		    tline += " "
+		elif word == self.tab:
+		    tline += "\t"
 		elif word[0] == self.esc_char:
 		    tline += word[1:].encode('utf-8')
-                elif not word[0].encode('utf-8').isalpha():
-                    tline += word.encode('utf-8')
 		else:
 		    op_word = self.case_trans(word)
-		    tline += op_word.encode('utf-8')
+		    tline += op_word
 	    tline += "\n"
        
 	tline = tline.replace(self.space, " ")
