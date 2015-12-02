@@ -9,7 +9,6 @@ Devnagri to Persio-Arabic transliterator for hindi-urdu transliteration
 import os
 import re
 import sys
-import codecs
 import warnings
 
 import numpy as np
@@ -47,12 +46,14 @@ class DP_Transliterator():
 	self.lrange = set(range(ord('a'), ord('z')+1)) | set(range(ord('A'), ord('Z')+1))
 	self.letters = re.compile(r"([^a-zA-Z%s]+)" %(self.esc_char))
 
-        try:
-            with codecs.open('%s/extras/punkt.map' %path, 'r', 'utf-8') as punkt_fp:
-                self.punkt = {line.split()[0]: line.split()[1] for line in punkt_fp}
-        except IOError, e:
-            print >> sys.stderr, e
-            sys.exit(0)
+        self.punkt_str = str()
+        self.punkt_tbl = dict()
+        with open('%s/extras/punkt.map' %path) as punkt_fp:
+            for line in punkt_fp:
+                line = line.decode('utf-8')
+                s,t = line.split()
+                self.punkt_str += s
+                self.punkt_tbl[ord(s)] = t
 
     def feature_extraction(self, letters):
         out_word = list()
@@ -81,15 +82,6 @@ class DP_Transliterator():
     def case_trans(self, word):
         if word in self.lookup:
             return self.lookup[word]
-        if not ord(word[0]) in self.lrange:
-            non_alpha = list(word)
-            for i,char in enumerate(word):
-                non_alpha[i] = char
-                if char in self.punkt:
-                    non_alpha[i] = self.punkt[char]
-            non_alpha = ''.join(non_alpha).encode('utf-8')
-            self.lookup[word] = non_alpha
-            return non_alpha
         word_feats = ' '.join(word).replace(' a', 'a').replace(' Z', 'Z')
         word_feats = word_feats.encode('utf-8').split()
         word_feats = self.feature_extraction(word_feats)
@@ -119,6 +111,8 @@ class DP_Transliterator():
 		    tline += "\t"
 		elif word[0] == self.esc_char:
 		    tline += word[1:].encode('utf-8')
+                elif ord(word[0]) not in self.lrange:
+                    tline += word.translate(self.punkt_tbl).encode('utf-8')
 		else:
 		    op_word = self.case_trans(word)
 		    tline += op_word

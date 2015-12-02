@@ -9,7 +9,6 @@ Persio-Arabic to Devnagari transliterator for Urdu-Hindi transliteration
 import re
 import os
 import sys
-import codecs
 import warnings
 
 import numpy as np
@@ -48,13 +47,14 @@ class PD_Transliterator():
 		       set(range(int("0x06f0", 16), int("0x06fa", 16))) 
 	self.letters = re.compile(u'([^\u0621-\u063a\u0641-\u064a\u0674-\u06d3]+)')
 
-        try:
-            with codecs.open('%s/extras/punkt.map' %path, 'r', 'utf-8') as punkt_fp: 
-                self.punkt = {line.split()[1]: line.split()[0] for line in punkt_fp}
-        except IOError, e:
-            print >> sys.stderr, e
-            sys.exit(0)
-        self.punkt_str = ''.join(self.punkt.keys())     
+	self.punkt_str = str()
+	self.punkt_tbl = dict()
+        with open('%s/extras/punkt.map' %path) as punkt_fp:
+       	    for line in punkt_fp:
+		line = line.decode('utf-8')
+		s,t = line.split()
+		self.punkt_str += t	
+		self.punkt_tbl[ord(t)] = s
 
     def feature_extraction(self, letters):
         out_letters = list()
@@ -82,15 +82,6 @@ class PD_Transliterator():
     def case_trans(self, word):
         if word in self.lookup:
             return self.lookup[word]
-        if ord(word[0]) not in self.lrange:
-            non_alpha = list(word)
-            for i,char in enumerate(word):
-                non_alpha[i] = char
-                if char in self.punkt:
-                    non_alpha[i] = self.punkt[char]
-            non_alpha = ''.join(non_alpha).encode('utf-8')
-            self.lookup[word] = non_alpha
-            return non_alpha
         word_feats = ' '.join(word).replace(u' ھ', u'ھ').encode('utf-8').split()
         word_feats = self.feature_extraction(word_feats)
         op_word = self.con.convert(self.predict(word_feats))
@@ -122,8 +113,10 @@ class PD_Transliterator():
 		    continue
 		if word == self.space:
 		    tline += " "
-		if word == self.tab:
+		elif word == self.tab:
 		    tline += "\t"
+		elif ord(word[0]) not in self.lrange:
+		    tline += word.translate(self.punkt_tbl).encode('utf-8')
 		else:
 		    tline += self.case_trans(word)
 	    tline += "\n"
