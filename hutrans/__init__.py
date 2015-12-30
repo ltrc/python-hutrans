@@ -9,7 +9,7 @@ from .transliterator import transliterator
 __name__       = "Hindi-Urdu-Transliterator"
 __doc__        = "Hindi to Urdu transliterator and vice-versa"
 __author__     = ["Riyaz Ahmad", "Irshad Ahmad"]
-__version__    = "0.1"
+__version__    = "1.0"
 __license__    = "MIT"
 __maintainer__ = "Irshad Ahmad"
 __email__      = "irshad.bhat@research.iiit.ac.in"
