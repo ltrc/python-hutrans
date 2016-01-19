@@ -17,9 +17,7 @@ Installation
 Dependencies
 ~~~~~~~~~~~~
 
-`python-hutrans`_ requires `sklearn`_, `cython`_, `SciPy`_ and `indic-wx-converter`_.
-
-.. _`sklearn`: https://github.com/scikit-learn/scikit-learn
+`python-hutrans`_ requires `cython`_, `SciPy`_ and `indic-wx-converter`_.
 
 .. _`cython`: http://docs.cython.org/src/quickstart/install.html
 
@@ -31,9 +29,9 @@ To install the dependencies do something like (Ubuntu):
 
 ::
 
-    sudo apt-get install python-sklearn
-    sudo apt-get install cython
-    sudo apt-get install python-scipy
+    pip install cython
+    pip install python-scipy
+    pip install git+git://github.com/irshadbhat/indic-wx-converter.git
 
 Download
 ~~~~~~~~

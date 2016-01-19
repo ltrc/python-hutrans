@@ -79,7 +79,7 @@ setup(
     url="https://github.com/irshadbhat/hutrans",
     package_dir={"hutrams":"hutrans"},
     packages=['hutrans'],
-    package_data={'hutrans': ['models/*.npy', 'extras/*']},
+    package_data={'hutrans': ['models/*.npy', 'mapping/*']},
 
     classifiers=[
         "Topic :: Indian Languages :: Language Identification",
@@ -96,7 +96,7 @@ setup(
     ext_modules=[
         Extension("hutrans.viterbi", ["hutrans/viterbi.pyx"]),
     ],
-    #install_requires=["cython", "numpy", "scipy", "sklearn"],
-    requires=["cython", "numpy", "scipy", "sklearn"],
+    install_requires=["cython", "numpy", "scipy"],
+    #requires=["cython", "numpy", "scipy"],
     **params
 )

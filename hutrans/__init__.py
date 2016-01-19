@@ -4,10 +4,10 @@ import re
 import sys
 import argparse
 
-from .transliterator import transliterator
+from transliterator import transliterator
 
 __name__       = "Hindi-Urdu-Transliterator"
-__doc__        = "Hindi to Urdu transliterator and vice-versa"
+__doc__        = "Hindi to Urdu transliterator and Urdu to Hindi transliterator"
 __author__     = ["Riyaz Ahmad", "Irshad Ahmad"]
 __version__    = "1.0"
 __license__    = "MIT"
@@ -41,25 +41,22 @@ def main():
             
     # transliterate text
     if args.format_ == "ssf":
-	if args.nested:
-	    sentences = re.finditer("(<Sentence id=.*?>\s*\n.*?)\n(.*?)\)\)\s*\n</Sentence>", args.INFILE.read(), re.S)
+        if args.nested:
+            sentences = re.finditer("(<Sentence id=.*?>\s*\n.*?)\n(.*?)\)\)\s*\n</Sentence>", args.INFILE.read(), re.S)
         else:
-	    sentences = re.finditer("(<Sentence id=.*?>)(.*?)</Sentence>", args.INFILE.read(), re.S)
-	for sid_sentence in sentences:
-	    sid = sid_sentence.group(1)
-	    sentence = sid_sentence.group(2).strip()
+            sentences = re.finditer("(<Sentence id=.*?>)(.*?)</Sentence>", args.INFILE.read(), re.S)
+        for sid_sentence in sentences:
+            sid = sid_sentence.group(1)
+            sentence = sid_sentence.group(2).strip()
             args.OUTFILE.write('%s\n' %sid)
             consen = trn.convert(sentence)
             args.OUTFILE.write('%s' %consen)
-	    if args.nested: args.OUTFILE.write("\t))\n")
+            if args.nested: args.OUTFILE.write("\t))\n")
             args.OUTFILE.write("</Sentence>\n\n")
     else:
         for line in args.INFILE:
             tline = trn.convert(line)
-	    if args.format_ == "text":
-		args.OUTFILE.write("%s\n" %(tline))
-	    else:
-		args.OUTFILE.write(tline)
+            args.OUTFILE.write(tline)
     
     # close files 
     args.INFILE.close()

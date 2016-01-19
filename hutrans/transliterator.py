@@ -1,17 +1,14 @@
 #!/usr/bin/env python
 
+# Copyright Irshad Ahmad Bhat 2015
+
 import os
 import re
 import sys
 
-from .ssf_reader import SSFReader
-from .dev2parab import DP_Transliterator
-from .parab2dev import PD_Transliterator
-
-__author__     = ["Riyaz Ahmad", "Irshad Ahmad"]
-__maintainer__ = "Irshad Ahmad"
-__credits__    = ["Irshad Ahmad", "Riyaz Ahmad"]
-__email__      = "irshad.bhat@research.iiit.ac.in",
+from ssf_reader import SSFReader
+from dev2parab import DP_Transliterator
+from parab2dev import PD_Transliterator
 
 class transliterator():
 
