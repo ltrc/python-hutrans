@@ -45,8 +45,7 @@ Install
 
 ::
 
-    cd python-hutrans
-    sudo python setup.py install
+    pip install git+git://github.com/irshadbhat/python-hutrans.git
 
 Examples
 ~~~~~~~~
