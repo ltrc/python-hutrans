@@ -28,8 +28,8 @@ class DP_Transliterator():
     def __init__(self):        
         self.lookup = dict()
         self.esc_ch = '\x00'
-        self.tab = '\x01\x02'
-        self.space = '\x02\x01'
+        self.tab = '\x01\x03'
+        self.space = '\x02\x04'
 
         self.fit()
 
