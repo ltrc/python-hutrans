@@ -1,14 +1,16 @@
-#!/usr/bin/env python
+#!/usr/bin/env python 
+# -*- coding: utf-8 -*-
 
-# Copyright Irshad Ahmad Bhat 2015
+#Copyright (C) 2015 Irshad Ahmad Bhat
 
-import os
+from __future__ import print_function, absolute_import
+
 import re
 import sys
 
-from ssf_reader import SSFReader
-from dev2parab import DP_Transliterator
-from parab2dev import PD_Transliterator
+from ._utils import SSFReader
+from .dev2parab import DP_Transliterator
+from .parab2dev import PD_Transliterator
 
 class transliterator():
 

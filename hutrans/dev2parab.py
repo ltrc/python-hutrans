@@ -1,23 +1,22 @@
 #!/usr/bin/env python 
-#!-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
-# Copyright Irshad Ahmad Bhat 2015
+#Copyright (C) 2015 Irshad Ahmad Bhat
 
 """
 Transliteration Tool:
 Devnagri to Persio-Arabic transliterator for hindi-urdu transliteration
 """
 
-import os
 import re
 import sys
 import string
+import os.path
 import warnings
 
 import numpy as np
 
-import viterbi
-import one_hot_repr
+from ._decode import viterbi
 from converter_indic import wxConvert
 
 warnings.filterwarnings("ignore")
@@ -35,16 +34,16 @@ class DP_Transliterator():
 
     def fit(self):
         self.con = wxConvert(order='utf2wx', rmask=False)
-        path = os.path.abspath(__file__).rpartition('/')[0]
+        dist_dir = os.path.dirname(os.path.abspath(__file__))
 
         #load models
-        sys.path.append(path)
-        self.coef_            = np.load('%s/models/hu_coef.npy' %path)[0]
-        self.classes_         = np.load('%s/models/hu_classes.npy' %path)[0]
-        self.vectorizer_      = np.load('%s/models/hu_sparse-vec.npy' %path)[0]
-        self.intercept_init_  = np.load('%s/models/hu_intercept_init.npy' %path)
-        self.intercept_trans_ = np.load('%s/models/hu_intercept_trans.npy' %path)
-        self.intercept_final_ = np.load('%s/models/hu_intercept_final.npy' %path)
+        sys.path.append('%s/_utils' %dist_dir)
+        self.coef_            = np.load('%s/models/hu_coef.npy' %dist_dir)[0]
+        self.classes_         = np.load('%s/models/hu_classes.npy' %dist_dir)[0]
+        self.vectorizer_      = np.load('%s/models/hu_sparse-vec.npy' %dist_dir)[0]
+        self.intercept_init_  = np.load('%s/models/hu_intercept_init.npy' %dist_dir)
+        self.intercept_trans_ = np.load('%s/models/hu_intercept_trans.npy' %dist_dir)
+        self.intercept_final_ = np.load('%s/models/hu_intercept_final.npy' %dist_dir)
         
         #initialize character maps  
         self.letters = set(string.ascii_letters)
@@ -55,7 +54,7 @@ class DP_Transliterator():
 
         #initialize punctuation map table
         self.punkt_tbl = dict()
-        with open('%s/mapping/punkt.map' %path) as punkt_fp:
+        with open('%s/mapping/punkt.map' %dist_dir) as punkt_fp:
             for line in punkt_fp:
                 line = line.decode('utf-8')
                 s,t = line.split()

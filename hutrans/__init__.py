@@ -1,14 +1,16 @@
-#! /usr/bin/env python
+#!/usr/bin/env python 
+# -*- coding: utf-8 -*-
 
 import re
 import sys
 import argparse
 
-from transliterator import transliterator
+from .transliterator import transliterator
 
 __name__       = "Hindi-Urdu-Transliterator"
 __doc__        = "Hindi to Urdu transliterator and Urdu to Hindi transliterator"
 __author__     = ["Riyaz Ahmad", "Irshad Ahmad"]
+__copyright__  = "Copyright (C) 2015 Riyaz Ahmad, Irshad Ahmad"
 __version__    = "1.0"
 __license__    = "MIT"
 __maintainer__ = "Irshad Ahmad"

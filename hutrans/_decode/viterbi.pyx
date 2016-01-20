@@ -1,6 +1,7 @@
-# Copyright Irshad Ahmad Bhat, Riyaz Ahmad Bhat 2015
+#!/usr/bin/env python 
+# -*- coding: utf-8 -*-
 
-"""Decoding (inference) algorithms."""
+#Copyright (C) 2015 Irshad Ahmad Bhat, Riyaz Ahmad Bhat
 
 cimport cython
 cimport numpy as np

@@ -1,7 +1,7 @@
 #!/usr/bin/env python 
-#!-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
-# Copyright Irshad Ahmad Bhat 2015
+#Copyright (C) 2015 Irshad Ahmad Bhat
 
 """
 Transliteration Tool:
@@ -16,8 +16,7 @@ import warnings
 
 import numpy as np
 
-import viterbi
-import one_hot_repr
+from ._decode import viterbi
 from converter_indic import wxConvert
 
 warnings.filterwarnings("ignore")
@@ -33,16 +32,16 @@ class PD_Transliterator():
 
     def fit(self):
         self.con = wxConvert(order='wx2utf', rmask=False)
-        path = os.path.abspath(__file__).rpartition('/')[0]
+        dist_dir = os.path.dirname(os.path.abspath(__file__))
 
         #load models
-        sys.path.append(path)
-        self.coef_            = np.load('%s/models/uh_coef.npy' %path)[0]
-        self.classes_         = np.load('%s/models/uh_classes.npy' %path)[0]
-        self.vectorizer_      = np.load('%s/models/uh_sparse-vec.npy' %path)[0]
-        self.intercept_init_  = np.load('%s/models/uh_intercept_init.npy' %path)
-        self.intercept_trans_ = np.load('%s/models/uh_intercept_trans.npy' %path)
-        self.intercept_final_ = np.load('%s/models/uh_intercept_final.npy' %path)
+        sys.path.append('%s/_utils' %dist_dir)
+        self.coef_            = np.load('%s/models/uh_coef.npy' %dist_dir)[0]
+        self.classes_         = np.load('%s/models/uh_classes.npy' %dist_dir)[0]
+        self.vectorizer_      = np.load('%s/models/uh_sparse-vec.npy' %dist_dir)[0]
+        self.intercept_init_  = np.load('%s/models/uh_intercept_init.npy' %dist_dir)
+        self.intercept_trans_ = np.load('%s/models/uh_intercept_trans.npy' %dist_dir)
+        self.intercept_final_ = np.load('%s/models/uh_intercept_final.npy' %dist_dir)
     
         #compile regexes
         self.non_alpha = re.compile(u'([^\u0621-\u063a\u0641-\u064a\u0674-\u06d3]+)')
@@ -55,7 +54,7 @@ class PD_Transliterator():
 
         #initialize punctuation map table
         self.punkt_tbl = dict()
-        with open('%s/mapping/punkt.map' %path) as punkt_fp:
+        with open('%s/mapping/punkt.map' %dist_dir) as punkt_fp:
             for line in punkt_fp:
                 line = line.decode('utf-8')
                 src, trg = line.split()
@@ -63,7 +62,7 @@ class PD_Transliterator():
 
         #initialize urdu normalization table
         self.canonical_eq = dict()
-        with open('%s/mapping/urdu_urdu.map' %path) as nu_fp:
+        with open('%s/mapping/urdu_urdu.map' %dist_dir) as nu_fp:
             for line in nu_fp:
                 line = line.decode('utf-8')
                 src, trg = line.split()

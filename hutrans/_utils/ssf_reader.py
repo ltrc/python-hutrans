@@ -1,6 +1,7 @@
-#!/usr/bin/python
+#!/usr/bin/env python 
+# -*- coding: utf-8 -*-
 
-# Copyright Irshad Ahmad Bhat, Riyaz Ahmad Bhat 2015
+#Copyright (C) 2015 Irshad Ahmad Bhat, Riyaz Ahmad Bhat
 
 import re
 from collections import namedtuple, OrderedDict

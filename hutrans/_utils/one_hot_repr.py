@@ -1,7 +1,7 @@
 #!/usr/bin/env python 
-#!-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
-# Copyright Irshad Ahmad Bhat 2015
+#Copyright (C) 2015 Irshad Ahmad Bhat
 
 import numpy as np
 from scipy import sparse as sp
