@@ -19,6 +19,8 @@ Dependencies
 
 `python-hutrans`_ requires `cython`_, `SciPy`_ and `indic-wx-converter`_.
 
+.. _`python-hutrans`: https://github.com/irshadbhat/python-hutrans
+
 .. _`cython`: http://docs.cython.org/src/quickstart/install.html
 
 .. _`Scipy`: http://www.scipy.org/install.html
