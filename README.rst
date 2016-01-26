@@ -2,7 +2,7 @@
 python-hutrans
 ==============
 
-Hindi-to-Urdu and Urdu-to-Hidi transliterator.
+Transliteration tool for Hindi-to-Urdu and Urdu-to-Hindi transliteration.
 
 References
 ==========
