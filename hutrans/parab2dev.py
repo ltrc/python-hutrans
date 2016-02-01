@@ -26,6 +26,7 @@ class PD_Transliterator():
 
     def __init__(self): 
         self.lookup = dict()
+        self.tab = '\x01\x04' 
         self.space = '\x02\x03' 
 
         self.fit()
@@ -155,8 +156,8 @@ class PD_Transliterator():
         text = self.unicode_equivalence(text)
         #matra normalization
         text = self.matra_norm(text)
+        text = text.replace('\t', self.tab)
         text = text.replace(' ', self.space)
-        text = text.replace('\t', self.space)
         lines = text.split("\n")
         for line in lines:
             if not line.strip():
@@ -177,7 +178,7 @@ class PD_Transliterator():
             trans_list.append(trans_line)
         
         trans_line = '\n'.join(trans_list)
+        trans_line = trans_line.replace(self.tab, '\t')
         trans_line = trans_line.replace(self.space, ' ')
-        trans_line = trans_line.replace(self.space, '\t')
 
         return trans_line
