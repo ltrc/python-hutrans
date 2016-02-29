@@ -8,7 +8,6 @@ from scipy import sparse as sp
 
 class OneHotEncoder():
     """Transforms categorical features to continuous numeric features"""
-
     def __init__(self,sparse=True):
         self.sparse = sparse
 
@@ -26,6 +25,7 @@ class OneHotEncoder():
         return self
     
     def transform(self, X):
+        X = np.atleast_2d(X)
         if self.sparse:
             one_hot_matrix = sp.lil_matrix((len(X), sum(len(i) for i in self.unique_feats)))
         else:
