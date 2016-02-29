@@ -60,7 +60,7 @@ else:
     }
     params['entry_points'] = {'console_scripts': ['hutrans = hutrans:main']}
 
-# Get the version from youtube_dl/version.py without importing the package
+# Get the package version
 exec(compile(open('hutrans/version.py').read(),
              'hutrans/version.py', 'exec'))
 
@@ -82,10 +82,16 @@ setup(
     package_data={'hutrans': ['models/*.npy', 'mapping/*']},
 
     classifiers=[
-        "Topic :: Indian Languages :: Language Identification",
+        "Topic :: Text Processing :: Linguistic",
+        "Topic :: Software Development :: Libraries :: Python Modules",
+        "Development Status :: 5 - Production/Stable",
         "Environment :: Console",
-        "License :: Public Domain",
+        "Intended Audience :: Science/Research",
+        "License :: OSI Approved :: MIT License",
+        "Natural Language :: English",
         "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3.3",
+        "Operating System :: Unix"
     ],
     cmdclass={'build_ext': build_ext},
     ext_modules=[
