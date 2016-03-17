@@ -77,7 +77,7 @@ setup(
     maintainer_email='irshad.bhat@research.iiit.ac.in',
     license = "MIT",
     url="https://github.com/irshadbhat/hutrans",
-    package_dir={"hutrams":"hutrans"},
+    package_dir={"hutrans":"hutrans"},
     packages=['hutrans', 'hutrans._utils', 'hutrans._decode'],
     package_data={'hutrans': ['models/*.npy', 'mapping/*']},
 
